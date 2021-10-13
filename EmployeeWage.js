@@ -1,35 +1,96 @@
-const IS_ABSENT=0;
-const IS_PART_TIME=1;
-const IS_FULL_TIME=2;
-const PART_TIME_HRS=4;
-const FULL_TIME_HRS=8;
-const EMP_WAGE_PER_HRS=20;
-const NUM_OF_WORKING_DAYS= 10;
+const IS_PART_TIME = 1;
+const IS_FULL_TIME = 2;
+const PART_TIME_HOURS = 4;
+const FULL_TIME_HOURS = 8;
+const WAGE_PER_HOUR = 20;
+const NUM_OF_WORKING_DAYS=20;
 const MAX_HRS_IN_MONTH=160;
-let empDailyWageArray=new Array();
-function getWorkingHours(empCheck){
-switch(empCheck) {
-    
-    case IS_PART_TIME:
-        return PART_TIME_HRS;
 
-    case IS_FULL_TIME:
-        return FULL_TIME_HRS;
+
+function getWorkingHours(empCheck) {
+
+  switch(empCheck) {
+    case 1:
+        return PART_TIME_HOURS;
+        break;
+    case 2:
+        return FULL_TIME_HOURS;
+        break;
     default:
         return 0;
-   }    
+  }
 }
+
 function calcDailyWage(empHrs) {
-	return empHrs * EMP_WAGE_PER_HRS;
+  return empHrs* WAGE_PER_HOUR;
 }
-let totalEmpHrs=0;
-let totalWorkingDays=0;
-while(totalEmpHrs <= MAX_HRS_IN_MONTH && totalWorkingDays <= NUM_OF_WORKING_DAYS) { 
-totalWorkingDays++;
-let empCheck=Math.floor(Math.random()*10)%3;
-let empHrs= getWorkingHours(empCheck);
+
+
+let totalEmpHrs =0;
+let totalWorkingdays =0;
+let empHrs = 0;
+let empDailyWageArr = new Array();
+
+while(totalEmpHrs <= MAX_HRS_IN_MONTH && totalWorkingdays < NUM_OF_WORKING_DAYS) {
+totalWorkingdays++;
+let empCheck = Math.floor(Math.random() * 10) % 3;
+empHrs = getWorkingHours(empCheck);
 totalEmpHrs += empHrs;
-empDailyWageArray.push(calcDailyWage(empHrs));
+empDailyWageArr.push(calcDailyWage(empHrs));
 }
-let empWage=calcDailyWage(totalEmpHrs);
-console.log("Total Days: "+ totalWorkingDays +" Total Hrs: "+ totalEmpHrs +" Employee Wage is: " + empWage);
+
+let empWage = calcDailyWage(totalEmpHrs);
+
+console.log("Total Days: "+totalWorkingdays);
+console.log("Total Hours: "+totalEmpHrs);
+console.log("Daily Wage Array: "+empDailyWageArr);
+console.log("Employee Wage: "+empWage);
+
+let totalEmpWage = 0;
+
+function sum(dailyWage) {
+   totalEmpWage += dailyWage;
+}
+
+empDailyWageArr.forEach(sum);
+console.log("Total Employee wage: "+totalEmpWage);
+
+function totalWages(totalWage , dailyWage) {
+    return totalWage + dailyWage;
+}
+console.log("Employee Wage with Reduce Method: "+empDailyWageArr.reduce(totalWages, 0));
+
+let dailyCntr = 0;
+
+function mapDayWithWage(dailyWage) {
+   dailyCntr++;
+   return " "+dailyCntr + "=" +dailyWage+" ";
+}
+
+let mapDaywithWageArr = empDailyWageArr.map(mapDayWithWage);
+console.log("Daily Wage Map : "+mapDaywithWageArr);
+
+function fulltimeWage(dailyWage) {
+   return dailyWage.includes("160");
+}
+
+let fullDayWageArr = mapDaywithWageArr.filter(fulltimeWage);
+console.log("Daily Wage Filter when full time wage earned: "+fullDayWageArr);
+
+
+console.log("First Time full time wage was earned on Day: "+mapDaywithWageArr.find(fulltimeWage));
+
+
+console.log("Check all Element have full time Wage: "+fullDayWageArr.every(fulltimeWage));
+
+
+function parttimeWage(dailyWage) {
+   return dailyWage.includes("80");
+}
+console.log("Check if any part time Wage: "+mapDaywithWageArr.some(parttimeWage));
+
+function totalDaysWorked(numofDays, dailyWage) {
+   if(dailyWage > 0) return numofDays+1;
+   return numofDays;
+}
+console.log("Number of Days Employee Worked: "+empDailyWageArr.reduce(totalDaysWorked, 0));
